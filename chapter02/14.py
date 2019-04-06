@@ -7,7 +7,6 @@
 # * それをhightempに適用
 
 #%%
-import sys
 import common02
 
 n = common02.get_argv_n()
