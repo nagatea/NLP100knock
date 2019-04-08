@@ -9,9 +9,7 @@ import common02
 hightemp = common02.get_hightemp()
 col1 = [word.split("\t")[0] for word in hightemp]
 word_list = set(col1)
-res = []
-for word in word_list:
-  res.append((word ,col1.count(word)))
+res = [(word, col1.count(word)) for word in word_list]
 res.sort(key=lambda tmp: tmp[1], reverse=True)
 res
 #%%
