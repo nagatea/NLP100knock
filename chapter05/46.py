@@ -10,3 +10,28 @@
 # 始める  で      ここで
 # 見る    は を   吾輩は ものを
 # ```
+
+
+#%%
+import common05
+data = common05.get_chunk_list()
+res = []
+
+for chunks in data:
+  for chunk in chunks:
+    if len(chunk.srcs) > 0:
+      if '動詞' in [morph.pos for morph in chunk.morphs]:
+        dousi = [morph.base for morph in chunk.morphs if morph.pos == '動詞'][0]
+        zyosi_list = []
+        for src in chunk.srcs:
+          if ('助詞' in [morph.pos for morph in chunks[src].morphs]):
+            zyosi_list.append(([morph.base for morph in chunks[src].morphs if morph.pos == '助詞'][0], ''.join([morph.surface for morph in chunks[src].morphs if morph.pos != '記号'])))
+        if len(zyosi_list) > 0:
+          zyosi_list.sort(key=lambda x: x[0])
+          res.append(f'{dousi}\t{" ".join([a for (a, b) in zyosi_list])}\t{" ".join([b for (a, b) in zyosi_list])}')
+
+res[0:50]
+
+#%%
+with open('46.txt', 'w') as f:
+  f.write('\n'.join(res))

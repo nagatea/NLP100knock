@@ -14,3 +14,30 @@
 # このプログラムの出力をファイルに保存し，以下の事項をUNIXコマンドを用いて確認せよ．
 # * コーパス中で頻出する述語（サ変接続名詞+を+動詞）
 # * コーパス中で頻出する述語と助詞パターン
+
+
+#%%
+import common05
+data = common05.get_chunk_list()
+res = []
+
+for chunks in data:
+  i = 0
+  for chunk in chunks:
+    if len(chunk.srcs) > 0 and i > 0:
+      if '名詞' in [morph.pos for morph in chunks[i-1].morphs] and 'を' in [morph.surface for morph in chunks[i-1].morphs]:
+        zyosi_list = []
+        for src in chunk.srcs:
+          if '助詞' in [morph.pos for morph in chunks[src].morphs] and not ('を' in [morph.surface for morph in chunks[src].morphs]):
+            zyosi_list.append(([morph.base for morph in chunks[src].morphs if morph.pos == '助詞'][0], ''.join([morph.surface for morph in chunks[src].morphs if morph.pos != '記号'])))
+        if len(zyosi_list) > 0:
+          zyosi_list.sort(key=lambda x: x[0])
+          if i < len(chunks):
+            res.append(f'{"".join([morph.surface for morph in chunks[i-1].morphs if morph.pos != "記号"] + [morph.surface for morph in chunk.morphs if morph.pos != "記号"])}\t{" ".join([a for (a, b) in zyosi_list])}\t{" ".join([b for (a, b) in zyosi_list])}')
+    i += 1
+
+res[0:50]
+
+#%%
+with open('47.txt', 'w') as f:
+  f.write('\n'.join(res))

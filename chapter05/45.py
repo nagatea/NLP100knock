@@ -14,3 +14,36 @@
 # このプログラムの出力をファイルに保存し，以下の事項をUNIXコマンドを用いて確認せよ．
 # * コーパス中で頻出する述語と格パターンの組み合わせ
 # * 「する」「見る」「与える」という動詞の格パターン（コーパス中で出現頻度の高い順に並べよ）
+
+#%%
+import common05
+data = common05.get_chunk_list()
+res = []
+
+for chunks in data:
+  for chunk in chunks:
+    if len(chunk.srcs) > 0:
+      if '動詞' in [morph.pos for morph in chunk.morphs]:
+        dousi = [morph.base for morph in chunk.morphs if morph.pos == '動詞'][0]
+        zyosi_list = []
+        for src in chunk.srcs:
+          if ('助詞' in [morph.pos for morph in chunks[src].morphs]):
+            zyosi_list.append([morph.base for morph in chunks[src].morphs if morph.pos == '助詞'][0])
+        if len(zyosi_list) > 0:
+          zyosi_list.sort()
+          res.append(f'{dousi}\t{" ".join(zyosi_list)}')
+
+res[0:50]
+
+#%%
+with open('45.txt', 'w') as f:
+  f.write('\n'.join(res))
+
+#%% [markdown]
+# このプログラムの出力をファイルに保存し，以下の事項をUNIXコマンドを用いて確認せよ．
+# * コーパス中で頻出する述語と格パターンの組み合わせ
+#   * `$ sort 45.txt | uniq -c | sort -k 1 -r > 45_count.txt`
+# * 「する」「見る」「与える」という動詞の格パターン（コーパス中で出現頻度の高い順に並べよ）
+#   * `$ cat 45_count.txt | grep  -e " する"`
+#   * `$ cat 45_count.txt | grep  -e " 見る"`
+#   * `$ cat 45_count.txt | grep  -e " 与える"`

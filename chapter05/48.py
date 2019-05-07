@@ -12,3 +12,26 @@
 # 人間という -> ものを -> 見た
 # ものを -> 見た
 # ```
+
+#%%
+import common05
+data = common05.get_chunk_list()
+
+res = []
+for chunks in data:
+  for chunk in chunks:
+    if '名詞' in [morph.pos for morph in chunk.morphs]:
+      chunk_list = []
+      tmp_chunk = chunk
+      while True:
+        chunk_list.append(tmp_chunk)
+        if tmp_chunk.dst == -1:
+          break
+        tmp_chunk = chunks[tmp_chunk.dst]
+      if len(chunk_list) > 0:
+        morph_list = []
+        for chu in chunk_list:
+          morph_list.append(''.join([morph.surface for morph in chu.morphs if morph.pos != '記号']))
+        res.append(' -> '.join(morph_list))
+
+res[0:50]
