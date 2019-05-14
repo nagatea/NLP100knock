@@ -1,6 +1,6 @@
-#%% [markdown]|
-# # 第7章: データベース|
-# artist.json.gzは，オープンな音楽データベースMusicBrainzの中で，アーティストに関するものをJSON形式に変換し，gzip形式で圧縮したファイルである．このファイルには，1アーティストに関する情報が1行にJSON形式で格納されている．JSON形式の概要は以下の通りである．|
+#%% [markdown]
+# # 第7章: データベース
+# artist.json.gzは，オープンな音楽データベースMusicBrainzの中で，アーティストに関するものをJSON形式に変換し，gzip形式で圧縮したファイルである．このファイルには，1アーティストに関する情報が1行にJSON形式で格納されている．JSON形式の概要は以下の通りである．
 #
 # |フィールド|型|内容|例|
 # |---|---|---|---|
@@ -26,6 +26,29 @@
 # |rating|レーティング|辞書オブジェクト||
 # |rating.count|レーティングの投票数|整数|13|
 # |rating.value|レーティングの値（平均値）|整数|86|
-#%%
+#%% [markdown]
 # ## 60. KVSの構築
 # Key-Value-Store (KVS) を用い，アーティスト名（name）から活動場所（area）を検索するためのデータベースを構築せよ．
+#
+# ### 手順
+# * KVSとして`Redis`を使います
+# * `$ brew install redis`
+# * `$ brew services start redis`
+# * `$ redis-cli`で起動されているかどうかとポート番号がわかる
+# * pythonのライブラリは`redis-py`を使う
+# * `$ pip install redis`
+# * `name => area`のデータベースを構築する
+# * nameが重複しているデータが複数ある？
+#   * idでプレフィックスをつけることにした
+
+#%%
+import gzip
+import json
+import redis
+r = redis.Redis(host='localhost', port=6379, db=0)
+
+with gzip.open("artist.json.gz", "rt") as f:
+  for line in f:
+    json_dict = json.loads(line)
+    if 'name' in json_dict:
+      r.set(f"{json_dict['name']}:{json_dict.get('id', 0)}", json_dict.get('area', ''))
