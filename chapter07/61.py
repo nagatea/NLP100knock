@@ -23,4 +23,4 @@ get_area('The Silhouettes')
 get_area('Al Street')
 
 #%%
-get_area('The Wanderers')
+get_area('Queen')

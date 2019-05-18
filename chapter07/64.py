@@ -34,7 +34,6 @@ with gzip.open("artist.json.gz", "rt") as f:
     col.insert_many(batch)
     print(i)
 
-
 #%%
 from pymongo import IndexModel, ASCENDING
 col.create_indexes([
@@ -46,4 +45,3 @@ col.create_indexes([
 
 #%%
 col.find_one()
-
