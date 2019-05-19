@@ -9,6 +9,15 @@ from pymongo import MongoClient, ASCENDING, DESCENDING
 client = MongoClient('localhost', 27017)
 db = client.nlp100.artist
 
+# CORS設定
+# Ajax通信をするときに使う
+@app.after_request
+def after_request(response):
+  response.headers.add('Access-Control-Allow-Origin', '*')
+  response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+  response.headers.add('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,OPTIONS')
+  return response
+
 @app.route('/')
 def index():
   return "Welcome to My Web App!!"
