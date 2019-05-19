@@ -1,17 +1,61 @@
 <template>
   <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+    <h1>Artist Search Service</h1>
+    <div>
+      <search-input attr="name" />
+      <search-input attr="aliases_name" />
+      <search-input attr="tag" />
+      <button @click="postSearch">search</button>
+    </div>
+  <div>
+    {{ artinstNames }}
+  </div>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import SearchInput from './components/SearchInput.vue'
+import axios from 'axios'
 
 export default {
   name: 'app',
   components: {
-    HelloWorld
+    SearchInput
+  },
+  data () {
+    return {
+      result: {
+        'data': []
+      }
+    }
+  },
+  computed: {
+    artinstNames () {
+      if (this.result['data'].length == 0) {
+        return
+      }
+      return this.result['data'].map((obj) => obj.name)
+    }
+  },
+  methods: {
+    async postSearch () {
+      const name = document.getElementById("name").value
+      const aliasesName = document.getElementById("aliases_name").value
+      const tag = document.getElementById("tag").value
+      let params = '?'
+      if (name != '') {
+        params = params + `name=${name}&`
+      }
+      if (aliasesName != '') {
+        params = params + `aliases_name=${aliasesName}&`
+      }
+      if (tag != '') {
+        params = params + `tag=${tag}&`
+      }
+      params = params.slice(0, -1)
+      
+      this.result = await axios.get('http://localhost:5000/search' + params)
+    }
   }
 }
 </script>
