@@ -8,7 +8,7 @@
       <button @click="postSearch">search</button>
     </div>
   <div>
-    {{ artinstNames }}
+    {{ artistNames }}
   </div>
   </div>
 </template>
@@ -30,7 +30,7 @@ export default {
     }
   },
   computed: {
-    artinstNames () {
+    artistNames () {
       if (this.result['data'].length == 0) {
         return
       }
@@ -55,6 +55,7 @@ export default {
       params = params.slice(0, -1)
       
       this.result = await axios.get('http://localhost:5000/search' + params)
+      console.log(this.result)
     }
   }
 }
